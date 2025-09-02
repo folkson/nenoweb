@@ -222,12 +222,12 @@ export const cloneGithubRepo = async (contentPath) => {
                 } catch (error) {
                 }
                 if (!is_empty(nenoData)) await insertPinTagsToIndexedDB(nenoData);
-            } else if (element.path.indexOf("picData/") === 0) {
+            } else if (element.path.indexOf("nenos/picData/") === 0) {
                 const picRaw = (await getGithubBlob({
                     file_sha: element.sha,
                 })).body;
                 let picData = {
-                    _id: element.path.substring(element.path.indexOf("/") + 1, element.path.indexOf(".")),
+                    _id: element.path.substring(12, element.path.indexOf(".")),
                     base64: "data:image/png;base64," + picRaw.content,
                 };
                 await insertPicToIndexedDB(picData);
