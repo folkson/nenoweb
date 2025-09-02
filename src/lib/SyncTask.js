@@ -34,7 +34,7 @@ export async function doTask(value) {
             case "push": {
                 data = await pushToGithub({
                     branch: githubStorelocal.branch,
-                    fileName: `${value.data.created_at.substring(0, 10)}/${value.data._id}.json`,
+                    fileName: `nenos/${value.data.created_at.substring(0, 10)}/${value.data._id}.json`,
                     content: JSON.stringify(value.data, null, "\t"),
                     commitMessage: `${shadata.body.sha === "" ? "[ADD]" : "[MODIFY]"} ${value.data.pureContent}`,
                     encode: true,
@@ -46,7 +46,7 @@ export async function doTask(value) {
             case "countDate": {
                 data = await pushToGithub({
                     branch: githubStorelocal.branch,
-                    fileName: `${value.data.created_at.substring(0, 10)}/${value.data._id}.json`,
+                    fileName: `nenos/${value.data.created_at.substring(0, 10)}/${value.data._id}.json`,
 
                     content: JSON.stringify(value.data, null, "\t"),
                     commitMessage: "countDate update",
@@ -59,7 +59,7 @@ export async function doTask(value) {
             case "pinTags": {
                 data = await pushToGithub({
                     branch: githubStorelocal.branch,
-                    fileName: `${value.data.created_at.substring(0, 10)}/${value.data._id}.json`,
+                    fileName: `nenos/${value.data.created_at.substring(0, 10)}/${value.data._id}.json`,
 
                     content: JSON.stringify(value.data, null, "\t"),
                     commitMessage: "pinTags update",
@@ -72,7 +72,7 @@ export async function doTask(value) {
             case "uploadPic": {
                 data = await pushToGithub({
                     branch: githubStorelocal.branch,
-                    fileName: `${value.data.created_at.substring(0, 10)}/${value.data._id}.${value.data.suffixName}`,
+                    fileName: `nenos/${value.data.created_at.substring(0, 10)}/${value.data._id}.${value.data.suffixName}`,
                     content: value.data.base64File.substring(value.data.base64File.indexOf(",") + 1),
                     commitMessage: "pic upload",
                     encode: false,
@@ -84,7 +84,7 @@ export async function doTask(value) {
             case "delete": {
                 if (shadata.body.sha) {
                     data = await deleteContent({
-                        fileName: `${value.data.created_at.substring(0, 10)}/${value.data._id}.json`,
+                        fileName: `nenos/${value.data.created_at.substring(0, 10)}/${value.data._id}.json`,
                         sha: shadata.body.sha,
                     });
                     console.log(value.data)
@@ -92,10 +92,10 @@ export async function doTask(value) {
                     for (const datum of value.data.images) {
                         let picShaDate = await getContentSha({
                             branch: githubStorelocal.branch,
-                            fileName: encodeURI(`picData/${datum.key}.${datum.suffixName}`),
+                            fileName: encodeURI(`nenos/picData/${datum.key}.${datum.suffixName}`),
                         })
                         let dePicData = await deleteContent({
-                            fileName: `picData/${datum.key}.${datum.suffixName}`, sha: picShaDate.body.sha,
+                            fileName: `nenos/picData/${datum.key}.${datum.suffixName}`, sha: picShaDate.body.sha,
                         });
                         console.log("deletePIC", dePicData);
                     }
@@ -143,14 +143,14 @@ export async function trySyncGithub() {
                     //如果是删除操作就执行删除
                     if (element.status === "removed") {
                         //判断是否是笔记文件
-                        if (element.filename.indexOf(".json") === 35) {
+                        if (element.filename.indexOf(".json") === 39) {
                             await deleteOneFromIndexedDB({
-                                _id: element.filename.substring(11, 35),
+                                _id: element.filename.substring(15, 39),
                             });
                         } else if (element.filename.indexOf("picData") === 0) {
                             //判断是否是图片文件
                             await deletePicFromIndexedDB({
-                                key: element.filename.substring(8, element.filename.lastIndexOf(".")),
+                                key: element.filename.substring(12, element.filename.lastIndexOf(".")),
                             });
                         }
                     } else if (element.filename.indexOf("picData/") === 0) {
